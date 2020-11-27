@@ -1,0 +1,4 @@
+include versioneer.py
+include meer_tec/_version.py
+include README.md
+include LICENSE
