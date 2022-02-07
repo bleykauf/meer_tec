@@ -1,7 +1,8 @@
-import socket
 import random
+import socket
 import struct
 import time
+
 from PyCRC.CRCCCITT import CRCCCITT as CRC
 
 
