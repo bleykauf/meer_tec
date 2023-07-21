@@ -1,47 +1,45 @@
 [build-system]
-requires = ["setuptools >= 38.3.0", "wheel"]
+requires = ["setuptools>=45", "wheel"]
 
-[tool.tox]
-legacy_tox_ini = """
-[tox]
-envlist = py34, py35, py36, py37, py38
+[project]
+name = "meer_tec"
+description = "MeCom for Python"
+authors = [
+  { name = "Bastian Leykauf" },
+  { email = "leykauf@physik.hu-berlin.de" },
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.6"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+  "Operating System :: OS Independent",
+  "Intended Audience :: Science/Research",
+]
+dependencies = ["pythoncrc"]
+dynamic = ["version"]
 
-[travis]
-python =
-    3.8: py38
-    3.7: py37
-    3.6: py36
-    3.5: py35
-    3.4: py34
+[project.optional-dependencies]
+dev = [
+  "black>=23.7.0",
+  "pre-commit>=2.20.0",
+  "flake8>=5.0.4",
+  "rope>=1.3.0",
+  "isort>=5.10.1",
+  "Flake8-pyproject>=1.1.0.post0",
+  "setuptools_scm>=6.2",
+]
 
-[testenv]
-deps =
-    pytest
-    pytest-cov
+[project.urls]
+homepage = "https://github.com/bleykauf/meer_tec/"
+repository = "https://github.com/bleykauf/meer_tec/"
 
-commands =
-    pytest --cov {envsitepackagesdir}/meer_tec
-"""
+[tool.setuptools_scm]
+write_to = "meer_tec/_version.py"
 
 [tool.black]
 line-length = 88
-exclude = '''
 
-(
-  /(
-      \.eggs         # exclude a few common directories in the
-    | \.git          # root of the project
-    | \.hg
-    | \.mypy_cache
-    | \.tox
-    | \.venv
-    | _build
-    | buck-out
-    | build
-    | dist
-  )/
-  | versioneer.py
-  | meer_tec/_version.py
-  | docs/config.py
-)
-'''
+[tool.isort]
+profile = "black"
