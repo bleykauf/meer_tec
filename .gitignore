@@ -116,3 +116,5 @@ dmypy.json
 
 # VSCode configuration
 .vscode
+
+meer_tec/_version.py
