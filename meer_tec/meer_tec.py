@@ -28,7 +28,7 @@ def _calc_checksum(string: str) -> str:
 
 
 class XPort(socket.socket):
-    def __init__(self, ip, port=10001):
+    def __init__(self, ip: str, port: int = 10001) -> None:
         super().__init__(socket.AF_INET, socket.SOCK_STREAM)
         self.settimeout(0.2)
         self.ip = ip
@@ -40,26 +40,28 @@ class XPort(socket.socket):
 
 
 class TEC:
-    def __init__(self, xport, addr):
+    def __init__(self, xport: XPort, addr: int) -> None:
         self.xport = xport
         self.addr = str(addr)
 
-    def _tcpip_query(self, request):
+    def _tcpip_query(self, request: "Request") -> str:
         self.xport.send(request.encode("ascii"))
         time.sleep(0.01)
         return self.xport.recv(128).decode("ascii")
 
-    def clear_buffer(self):
+    def clear_buffer(self) -> None:
         _ = self.xport.recv(128)
 
-    def get_parameter(self, cmd_id: int, value_type, request_number=None, instance=1):
+    def get_parameter(
+        self, cmd_id: int, value_type, request_number=None, instance: int = 1
+    ):
         cmd = "?VR" + _id_to_hex(cmd_id) + "{:02X}".format(instance)
         request = Request(cmd, self.addr, request_number=request_number)
         reponse = Response(self._tcpip_query(request), request, value_type=value_type)
         return reponse.value
 
     def set_parameter(
-        self, cmd_id: int, value, value_type, request_number=None, instance=1
+        self, cmd_id: int, value, value_type, request_number=None, instance: int = 1
     ):
         cmd = "VS" + _id_to_hex(cmd_id) + "{:02X}".format(instance)
         if value_type is float:

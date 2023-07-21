@@ -43,3 +43,7 @@ line-length = 88
 
 [tool.isort]
 profile = "black"
+
+[[tool.mypy.overrides]]
+module = "PyCRC.CRCCCITT"
+ignore_missing_imports = true
