@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=45", "wheel"]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
 
 [project]
 name = "meer_tec"
@@ -10,7 +10,7 @@ authors = [
 ]
 license = { file = "LICENSE" }
 readme = "README.md"
-requires-python = ">=3.6"
+requires-python = ">=3.8"
 classifiers = [
   "Programming Language :: Python :: 3",
   "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
@@ -19,6 +19,9 @@ classifiers = [
 ]
 dependencies = ["pythoncrc"]
 dynamic = ["version"]
+
+[tool.setuptools_scm]
+write_to = "meer_tec/_version.py"
 
 [project.optional-dependencies]
 dev = [
@@ -34,9 +37,6 @@ dev = [
 [project.urls]
 homepage = "https://github.com/bleykauf/meer_tec/"
 repository = "https://github.com/bleykauf/meer_tec/"
-
-[tool.setuptools_scm]
-write_to = "meer_tec/_version.py"
 
 [tool.black]
 line-length = 88
