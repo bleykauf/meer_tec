@@ -2,7 +2,7 @@ import random
 import socket
 import struct
 import time
-from typing import Optional, Union
+from typing import Optional, Protocol, Union
 
 from PyCRC.CRCCCITT import CRCCCITT as CRC
 
@@ -34,37 +34,47 @@ def _generate_request_number():
     return "{:04X}".format(num)
 
 
+class Interface(Protocol):
+    def query(self, request: "Request") -> str:
+        ...
+
+    def clear(self) -> None:
+        ...
+
+
 class XPort(socket.socket):
     def __init__(self, ip: str, port: int = 10001) -> None:
         super().__init__(socket.AF_INET, socket.SOCK_STREAM)
         self.settimeout(0.2)
         self.ip = ip
         self.port = port
-        self.connect()
-
-    def connect(self):
         super().connect((self.ip, self.port))
+
+    def query(self, request: "Request") -> str:
+        self.send(request.encode("ascii"))
+        time.sleep(0.01)
+        return self.recv(128).decode("ascii")
+
+    def clear(self) -> None:
+        _ = self.recv(128)
 
 
 class TEC:
-    def __init__(self, xport: XPort, addr: int) -> None:
-        self.xport = xport
+    def __init__(self, interface: Interface, addr: int) -> None:
+        self.interface = interface
         self.addr = str(addr)
 
-    def _tcpip_query(self, request: "Request") -> str:
-        self.xport.send(request.encode("ascii"))
-        time.sleep(0.01)
-        return self.xport.recv(128).decode("ascii")
-
-    def clear_buffer(self) -> None:
-        _ = self.xport.recv(128)
+    def clear(self) -> None:
+        self.interface.clear()
 
     def get_parameter(
         self, cmd_id: int, value_type, request_number=None, instance: int = 1
     ) -> Union[float, int]:
         cmd = "?VR" + _id_to_hex(cmd_id) + "{:02X}".format(instance)
         request = Request(cmd, self.addr, request_number=request_number)
-        reponse = Response(self._tcpip_query(request), request, value_type=value_type)
+        reponse = Response(
+            self.interface.query(request), request, value_type=value_type
+        )
         return reponse.value
 
     def set_parameter(
@@ -76,7 +86,9 @@ class TEC:
         elif value_type is int:
             cmd += _int_to_hex(value)
         request = Request(cmd, self.addr, request_number=request_number)
-        reponse = Response(self._tcpip_query(request), request, value_type=value_type)
+        reponse = Response(
+            self.interface.query(request), request, value_type=value_type
+        )
         print(reponse)
 
     def reset(self) -> None:
@@ -400,7 +412,7 @@ class Response(str):
     def __new__(cls, response, request, value_type):
         return super().__new__(cls, response)
 
-    def __init__(self, response, request, value_type):
+    def __init__(self, response, request, value_type) -> None:
         self.request = request
         self.value_type = value_type
         self.addr = self[1:3]
