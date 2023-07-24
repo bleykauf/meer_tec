@@ -17,7 +17,7 @@ classifiers = [
   "Operating System :: OS Independent",
   "Intended Audience :: Science/Research",
 ]
-dependencies = ["pythoncrc>=0.10.0"]
+dependencies = ["pythoncrc>=0.10.0", "pyserial>=3.5"]
 dynamic = ["version"]
 
 [tool.setuptools_scm]
