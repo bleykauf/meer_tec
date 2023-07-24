@@ -14,6 +14,14 @@ Note that only a small subset of [MeCom](https://www.meerstetter.ch/customer-cen
 
 ## Usage
 
+### USB
+
+```python
+usb = USB("COM3")
+tec = TEC(usb, 0)
+```
+
+### XPort
 Create a connection to the XPort and pass it as an argument to one of the TECs
 
 ```python
