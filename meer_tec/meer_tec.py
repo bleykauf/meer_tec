@@ -5,6 +5,7 @@ import time
 from typing import Optional, Protocol, Union
 
 from PyCRC.CRCCCITT import CRCCCITT as CRC
+from serial import Serial
 
 
 def _float_to_hex(f: float) -> str:
@@ -57,6 +58,18 @@ class XPort(socket.socket):
 
     def clear(self) -> None:
         _ = self.recv(128)
+
+
+class USB:
+    def __init__(self, port: str, timeout=1, baudrate=57600) -> None:
+        self.serial = Serial(
+            port, baudrate=baudrate, timeout=timeout, write_timeout=timeout
+        )
+
+    def query(self, request: "Request") -> str:
+        self.serial.write(request.encode("ascii"))
+        time.sleep(0.01)
+        return self.serial.read(128).decode("ascii")
 
 
 class TEC:
