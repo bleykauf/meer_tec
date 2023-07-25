@@ -1,1 +1,1 @@
-from meer_tec import USB, XPort, meer_tec  # noqa: F401
+from meer_tec import TEC, USB, XPort  # noqa: F401
