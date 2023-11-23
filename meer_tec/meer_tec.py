@@ -8,29 +8,67 @@ import serial
 from PyCRC.CRCCCITT import CRCCCITT as CRC
 
 
-def _float_to_hex(f: float) -> str:
-    """Convert float to hex of length 8."""
-    # remove the leading '0X' and capitalize
-    return hex(struct.unpack("<I", struct.pack("<f", f))[0])[2:].upper()
-
-
-def _int_to_hex(i: int) -> str:
-    """Convert an int to a hex of length 8."""
-    return f"{i:08X}"
-
-
-def _calc_checksum(string: str) -> str:
+def calc_checksum(string: str) -> str:
     """Calculate CRC checksum."""
     return f"{CRC().calculate(string):04X}"
 
 
-def _generate_request_number() -> int:
-    """generate a random request number"""
-    return random.randint(0, 65535)
+def construct_mecom_cmd(
+    addr: int,
+    cmd_id: int,
+    value_type,
+    instance: int = 1,  # for example to distinguish between CH1 and CH2
+    value: Optional[Union[float, int]] = None,
+    request_number: Optional[int] = None,
+) -> str:
+    """Construct a VS or ?VR command."""
+    if request_number is None:
+        # generate a random request number if none is given
+        request_number = random.randint(0, 65535)
+
+    if value is not None:
+        cmd_type = "VS"
+        if value_type is float:
+            # convert float to hex of length 8, remove the leading '0X' and capitalize
+            value = hex(struct.unpack("<I", struct.pack("<f", value))[0])[2:].upper()
+        elif value_type is int:
+            # convert int to hex of length 8
+            value = f"{value:08X}"
+    else:
+        cmd_type = "?VR"
+        value = ""
+
+    cmd = f"#{addr:02d}{request_number:04X}{cmd_type}{cmd_id:04X}{instance:02X}{value}"
+    return f"{cmd}{calc_checksum(cmd)}\r"
+
+
+def verify_response(reponse: "Message", request: "Message") -> bool:
+    checksum_correct = reponse.checksum == calc_checksum(reponse[0:-5])
+    request_match = reponse.request_number == request.request_number
+    return checksum_correct & request_match
+
+
+class Message(str):
+    def __new__(cls, response: str, value_type):
+        return super().__new__(cls, response)
+
+    def __init__(self, response: str, value_type) -> None:
+        self.value_type = value_type
+        self.addr = int(self[1:3])
+        self.request_number = int(self[3:7])
+        self.payload = self[7:-5]
+        self.checksum = self[-5:-1]
+
+    @property
+    def value(self) -> Union[float, int]:
+        if self.value_type is int:
+            return int(self.payload, 16)
+        if self.value_type is float:
+            return struct.unpack("!f", bytes.fromhex(self.payload))[0]
 
 
 class Interface(Protocol):
-    def query(self, request: "Request") -> str:
+    def query(self, request: Message) -> Message:
         ...
 
     def clear(self) -> None:
@@ -45,10 +83,11 @@ class XPort(socket.socket):
         self.port = port
         super().connect((self.ip, self.port))
 
-    def query(self, request: "Request") -> str:
+    def query(self, request: Message) -> Message:
         self.send(request.encode("ascii"))
         time.sleep(0.01)
-        return self.recv(128).decode("ascii")
+        response = self.recv(128).decode("ascii")
+        return Message(response, request, value_type=request.value_type)
 
     def clear(self) -> None:
         _ = self.recv(128)
@@ -60,10 +99,11 @@ class USB(serial.Serial):
             port, baudrate=baudrate, timeout=timeout, write_timeout=timeout
         )
 
-    def query(self, request: "Request") -> str:
+    def query(self, request: "Message") -> str:
         self.write(request.encode("ascii"))
         time.sleep(0.01)
-        return self.read(128).decode("ascii")
+        response = self.read(128).decode("ascii")
+        return Message(response, request, value_type=request.value_type)
 
 
 class TEC:
@@ -81,11 +121,16 @@ class TEC:
         request_number: Optional[int] = None,
         instance: int = 1,
     ) -> Union[float, int]:
-        cmd = f"?VR{cmd_id:04X}{instance:02X}"
-        request = Request(cmd, self.addr, request_number=request_number)
-        reponse = Response(
-            self.interface.query(request), request, value_type=value_type
+        cmd = construct_mecom_cmd(
+            addr=self.addr,
+            cmd_id=cmd_id,
+            value_type=value_type,
+            instance=instance,
+            value=None,
+            request_number=request_number,
         )
+        request = Message(cmd)
+        reponse = Message(self.interface.query(request), request, value_type=value_type)
         return reponse.value
 
     def set_parameter(
@@ -96,15 +141,16 @@ class TEC:
         request_number: Optional[int] = None,
         instance: int = 1,
     ) -> None:
-        cmd = f"VS{cmd_id:04X}{instance:02X}"
-        if value_type is float:
-            cmd += _float_to_hex(value)
-        elif value_type is int:
-            cmd += _int_to_hex(value)
-        request = Request(cmd, self.addr, request_number=request_number)
-        reponse = Response(
-            self.interface.query(request), request, value_type=value_type
+        cmd = construct_mecom_cmd(
+            addr=self.addr,
+            cmd_id=cmd_id,
+            value_type=value_type,
+            instance=instance,
+            value=value,
+            request_number=request_number,
         )
+        request = Message(cmd)
+        reponse = Message(self.interface.query(request), request, value_type=value_type)
         print(reponse)
 
     def reset(self) -> None:
@@ -668,51 +714,3 @@ class TEC:
     @positive_current_is_ch2.setter
     def positive_current_is_ch2(self, value) -> None:
         self.set_parameter(3034, value, value_type=int, instance=2)
-
-
-class Request(str):
-    def __new__(cls, cmd: str, addr: int, request_number: Optional[int] = None):
-        if request_number is None:
-            request_number = _generate_request_number()
-        # stitch everything together and add checksum
-        string = f"#{addr:02d}{request_number:04X}{cmd}"  # type: ignore[operator]
-        string = f"{string}{_calc_checksum(string)}\r"
-        return super().__new__(cls, string)
-
-    def __init__(self, cmd: str, addr: int, request_number: Optional[int] = None):
-        self.addr = int(self[1:3])
-        self.request_number = int(self[3:7])
-        self.payload = self[7:-5]
-        self.checksum = self[-5:-1]
-
-
-class Response(str):
-    def __new__(cls, response: str, request: Request, value_type):
-        return super().__new__(cls, response)
-
-    def __init__(self, response: str, request: Request, value_type) -> None:
-        self.request = request
-        self.value_type = value_type
-        self.addr = int(self[1:3])
-        self.request_number = int(self[3:7])
-        self.payload = self[7:-5]
-        self.checksum = self[-5:-1]
-
-    @property
-    def is_valid(self) -> bool:
-        checksum_correct = self.checksum == _calc_checksum(self[0:-5])
-        request_match = self.request_number == self.request.request_number
-        return checksum_correct & request_match
-
-    @property
-    def value(self) -> Union[float, int]:
-        if self.is_valid:
-            if self.value_type is int:
-                return int(self.payload, 16)
-            if self.value_type is float:
-                return struct.unpack("!f", bytes.fromhex(self.payload))[0]
-            else:
-                return float("nan")
-        else:
-            print(f"Invalid response: {self}")
-            return float("nan")
