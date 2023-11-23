@@ -13,7 +13,7 @@ def calc_checksum(string: str) -> str:
 def construct_mecom_cmd(
     addr: int,
     cmd_id: int,
-    value_type,
+    value_type: type,
     instance: int = 1,  # for example to distinguish between CH1 and CH2
     value: Optional[Union[float, int]] = None,
     request_number: Optional[int] = None,
@@ -46,10 +46,10 @@ def verify_response(reponse: "Message", request: "Message") -> bool:
 
 
 class Message(str):
-    def __new__(cls, response: str, value_type):
+    def __new__(cls, response: str, value_type: type):
         return super().__new__(cls, response)
 
-    def __init__(self, response: str, value_type) -> None:
+    def __init__(self, response: str, value_type: type) -> None:
         self.value_type = value_type
         self.addr = int(self[1:3])
         self.request_number = int(self[3:7])
