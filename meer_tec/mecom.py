@@ -1,8 +1,10 @@
 import random
 import struct
-from typing import Optional, Union
+from typing import Generic, Optional, Type, TypeVar, Union
 
 from PyCRC.CRCCCITT import CRCCCITT as CRC
+
+FloatOrInt = TypeVar("FloatOrInt", float, int)
 
 
 def calc_checksum(string: str) -> str:
@@ -13,7 +15,7 @@ def calc_checksum(string: str) -> str:
 def construct_mecom_cmd(
     addr: int,
     cmd_id: int,
-    value_type: type,
+    value_type: Type[FloatOrInt],
     instance: int = 1,  # for example to distinguish between CH1 and CH2
     value: Optional[Union[float, int]] = None,
     request_number: Optional[int] = None,
@@ -45,11 +47,13 @@ def verify_response(reponse: "Message", request: "Message") -> bool:
     return checksum_correct & request_match
 
 
-class Message(str):
-    def __new__(cls, response: str, value_type: type):
+class Message(str, Generic[FloatOrInt]):
+    value_type: Type[FloatOrInt]
+
+    def __new__(cls, response: str, value_type: Type[FloatOrInt]):
         return super().__new__(cls, response)
 
-    def __init__(self, response: str, value_type: type) -> None:
+    def __init__(self, response: str, value_type: Type[FloatOrInt]) -> None:
         self.value_type = value_type
         self.addr = int(self[1:3])
         self.request_number = int(self[3:7])
@@ -57,10 +61,10 @@ class Message(str):
         self.checksum = self[-5:-1]
 
     @property
-    def value(self) -> Union[float, int]:
+    def value(self) -> FloatOrInt:
         if self.value_type is int:
             return int(self.payload, 16)
         if self.value_type is float:
             return struct.unpack("!f", bytes.fromhex(self.payload))[0]
         else:
-            return float("nan")
+            raise ValueError("value_type must be int or float")

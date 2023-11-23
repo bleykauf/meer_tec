@@ -1,7 +1,7 @@
-from typing import Optional, Union
+from typing import Optional, Type, Union
 
 from .interfaces import Interface, Message
-from .mecom import construct_mecom_cmd
+from .mecom import FloatOrInt, construct_mecom_cmd
 
 
 class TEC:
@@ -15,10 +15,10 @@ class TEC:
     def get_parameter(
         self,
         cmd_id: int,
-        value_type,
+        value_type: Type[FloatOrInt],
         request_number: Optional[int] = None,
         instance: int = 1,
-    ) -> Union[float, int]:
+    ) -> FloatOrInt:
         cmd = construct_mecom_cmd(
             addr=self.addr,
             cmd_id=cmd_id,
@@ -35,7 +35,7 @@ class TEC:
         self,
         cmd_id: int,
         value: Union[float, int],
-        value_type,
+        value_type: Type[FloatOrInt],
         request_number: Optional[int] = None,
         instance: int = 1,
     ) -> None:
