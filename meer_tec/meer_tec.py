@@ -713,7 +713,7 @@ class Response(str):
             if self.value_type is float:
                 return struct.unpack("!f", bytes.fromhex(self.payload))[0]
             else:
-                print("Invalid response: {}".format(self))
                 return float("nan")
         else:
+            print("Invalid response: {}".format(self))
             return float("nan")
