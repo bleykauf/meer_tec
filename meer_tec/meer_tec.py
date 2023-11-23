@@ -669,7 +669,7 @@ class TEC:
 
 class Request(str):
     def __new__(cls, cmd: str, addr: str, request_number: Optional[str] = None):
-        if not request_number:
+        if request_number is None:
             request_number = _generate_request_number()
         # stitch everything together and add checksum
         string = f"#{int(addr):02d}{request_number}{cmd}"  # type: ignore[operator]
