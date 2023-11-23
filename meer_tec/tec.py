@@ -59,7 +59,7 @@ class TEC:
     # Common product parameters
 
     @property
-    def device_value_type(self) -> int:
+    def device_type(self) -> int:
         """
         Device type.
 
