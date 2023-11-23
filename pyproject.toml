@@ -31,8 +31,8 @@ dev = [
   "isort>=5.10.1",
   "Flake8-pyproject>=1.1.0.post0",
   "setuptools_scm>=6.2",
-  "pytest>=7.4.3",
 ]
+tests = ["mypy>=1.7.1", "pytest>=7.4.3", "types-pyserial>=3.5"]
 
 [project.urls]
 homepage = "https://github.com/bleykauf/meer_tec/"
