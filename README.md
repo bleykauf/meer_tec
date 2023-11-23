@@ -9,25 +9,29 @@
 [![PyPI](https://img.shields.io/pypi/v/meer_tec?color=blue)](https://pypi.org/project/meer_tec/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Currently, only communication via ethernet is supported (tested only with [Lantronix XPort](https://www.lantronix.com/products/xport/)).
-Note that only a small subset of [MeCom](https://www.meerstetter.ch/customer-center/compendium/64-tec-controller-remote-control) is implemented at this time.
+Both communication via USB and [Lantronix XPort](https://www.lantronix.com/products/xport/) are supported.
+
+Note that not all commands of [MeCom](https://www.meerstetter.ch/customer-center/compendium/64-tec-controller-remote-control) are implemented at this time. Feel free to submit more commands via a Pull Request.
 
 ## Usage
 
-### USB
+### Connection
+#### USB
 
 ```python
 usb = USB("COM3")
 tec = TEC(usb, 0)
 ```
 
-### XPort
+#### XPort
 Create a connection to the XPort and pass it as an argument to one of the TECs
 
 ```python
 xp = XPort('192.168.1.123')
 tec3 = TEC(xp, 3)
 ```
+
+## Commands
 
 The commands are implemented as properties. For example the target temperature
 can be read by simply using
@@ -38,8 +42,6 @@ tec3.target_temperature
 
 tec3.target_temperature = 23.1
 ```
-
-
 
 ## Authors
 
