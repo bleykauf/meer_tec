@@ -25,10 +25,9 @@ write_to = "meer_tec/_version.py"
 
 [project.optional-dependencies]
 dev = [
-  "black>=23.7.0",
+  "black>=23.11.0",
   "pre-commit>=2.20.0",
   "flake8>=5.0.4",
-  "rope>=1.3.0",
   "isort>=5.10.1",
   "Flake8-pyproject>=1.1.0.post0",
   "setuptools_scm>=6.2",
