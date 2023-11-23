@@ -4,7 +4,7 @@ from typing import Protocol
 
 import serial
 
-from .tec import Message
+from .mecom import Message
 
 
 class Interface(Protocol):
