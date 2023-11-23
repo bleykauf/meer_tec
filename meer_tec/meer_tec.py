@@ -16,23 +16,23 @@ def _float_to_hex(f: float) -> str:
 
 def _int_to_hex(i: int) -> str:
     """Convert an int to a hex of length 8."""
-    return "{:08X}".format(i)
+    return f"{i:08X}"
 
 
 def _id_to_hex(cmd_id: int) -> str:
     """Convert a command ID to a hex of length 4."""
-    return "{:04X}".format(cmd_id)
+    return f"{cmd_id:04X}"
 
 
 def _calc_checksum(string: str) -> str:
     """Calculate CRC checksum."""
-    return "{:04X}".format(CRC().calculate(string))
+    return f"{CRC().calculate(string):04X}"
 
 
 def _generate_request_number():
     # generate a random request number
     num = random.randint(0, 65535)
-    return "{:04X}".format(num)
+    return f"{num:04X}"
 
 
 class Interface(Protocol):
@@ -83,7 +83,7 @@ class TEC:
     def get_parameter(
         self, cmd_id: int, value_type, request_number=None, instance: int = 1
     ) -> Union[float, int]:
-        cmd = "?VR" + _id_to_hex(cmd_id) + "{:02X}".format(instance)
+        cmd = f"?VR{_id_to_hex(cmd_id)}{instance:02X}"
         request = Request(cmd, self.addr, request_number=request_number)
         reponse = Response(
             self.interface.query(request), request, value_type=value_type
@@ -93,7 +93,7 @@ class TEC:
     def set_parameter(
         self, cmd_id: int, value, value_type, request_number=None, instance: int = 1
     ) -> None:
-        cmd = "VS" + _id_to_hex(cmd_id) + "{:02X}".format(instance)
+        cmd = f"VS{_id_to_hex(cmd_id)}{instance:02X}"
         if value_type is float:
             cmd += _float_to_hex(value)
         elif value_type is int:
@@ -669,15 +669,11 @@ class TEC:
 
 class Request(str):
     def __new__(cls, cmd: str, addr: str, request_number: Optional[str] = None):
-        string = "#"
-        # padding of address
-        addr = "{:02d}".format(int(addr))
         if not request_number:
             request_number = _generate_request_number()
         # stitch everything together and add checksum
-        string += addr + request_number + cmd  # type: ignore[operator]
-        checksum = _calc_checksum(string)
-        string += checksum + "\r"
+        string = f"#{int(addr):02d}{request_number}{cmd}"  # type: ignore[operator]
+        string = f"{string}{_calc_checksum(string)}\r"
         return super().__new__(cls, string)
 
     def __init__(self, cmd, addr, request_number=None):
@@ -715,5 +711,5 @@ class Response(str):
             else:
                 return float("nan")
         else:
-            print("Invalid response: {}".format(self))
+            print(f"Invalid response: {self}")
             return float("nan")
