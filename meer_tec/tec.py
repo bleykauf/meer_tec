@@ -27,8 +27,8 @@ class TEC:
             value=None,
             request_number=request_number,
         )
-        request = Message(cmd)
-        reponse = Message(self.interface.query(request), request, value_type=value_type)
+        request = Message(cmd, value_type)
+        reponse = Message(self.interface.query(request), value_type=value_type)
         return reponse.value
 
     def set_parameter(
@@ -47,8 +47,8 @@ class TEC:
             value=value,
             request_number=request_number,
         )
-        request = Message(cmd)
-        reponse = Message(self.interface.query(request), request, value_type=value_type)
+        request = Message(cmd, value_type)
+        reponse = Message(self.interface.query(request), value_type=value_type)
         print(reponse)
 
     def reset(self) -> None:
