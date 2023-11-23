@@ -1,6 +1,6 @@
 import random
 import struct
-from typing import Generic, Optional, Type, TypeVar, Union
+from typing import Generic, Optional, Self, Type, TypeVar, Union
 
 from PyCRC.CRCCCITT import CRCCCITT as CRC
 
@@ -50,7 +50,7 @@ def verify_response(reponse: "Message", request: "Message") -> bool:
 class Message(str, Generic[FloatOrInt]):
     value_type: Type[FloatOrInt]
 
-    def __new__(cls, response: str, value_type: Type[FloatOrInt]):
+    def __new__(cls, response: str, value_type: Type[FloatOrInt]) -> Self:
         return super().__new__(cls, response)
 
     def __init__(self, response: str, value_type: Type[FloatOrInt]) -> None:

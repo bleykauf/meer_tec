@@ -34,7 +34,7 @@ class XPort(socket.socket):
 
 
 class USB(serial.Serial):
-    def __init__(self, port: str, timeout=1, baudrate=57600) -> None:
+    def __init__(self, port: str, timeout: int = 1, baudrate: int = 57600) -> None:
         super().__init__(
             port, baudrate=baudrate, timeout=timeout, write_timeout=timeout
         )

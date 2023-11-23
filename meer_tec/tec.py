@@ -65,7 +65,7 @@ class TEC:
 
         1122 → TEC-1122
         """
-        return self.get_parameter(100, value_type=int)  # type: ignore[return-value]
+        return self.get_parameter(100, value_type=int)
 
     @property
     def hardware_version(self) -> int:
@@ -74,12 +74,12 @@ class TEC:
 
         123 → 1.23
         """
-        return self.get_parameter(101, value_type=int)  # type: ignore[return-value]
+        return self.get_parameter(101, value_type=int)
 
     @property
     def serial_number(self) -> int:
         """Serial Number."""
-        return self.get_parameter(102, value_type=int)  # type: ignore[return-value]
+        return self.get_parameter(102, value_type=int)
 
     @property
     def firmware_version(self) -> int:
@@ -88,7 +88,7 @@ class TEC:
 
         123 → 1.23
         """
-        return self.get_parameter(103, value_type=int)  # type: ignore[return-value]
+        return self.get_parameter(103, value_type=int)
 
     @property
     def device_status(self) -> int:
@@ -102,22 +102,22 @@ class TEC:
         4: Bootloader
         5: Device will Reset within next 200ms
         """
-        return self.get_parameter(104, value_type=int)  # type: ignore[return-value]
+        return self.get_parameter(104, value_type=int)
 
     @property
     def error_number(self) -> int:
         """Error number."""
-        return self.get_parameter(105, value_type=int)  # type: ignore[return-value]
+        return self.get_parameter(105, value_type=int)
 
     @property
     def error_instance(self) -> int:
         """Error Instance."""
-        return self.get_parameter(106, value_type=int)  # type: ignore[return-value]
+        return self.get_parameter(106, value_type=int)
 
     @property
     def error_parameter(self) -> int:
         """Error Parameter."""
-        return self.get_parameter(107, value_type=int)  # type: ignore[return-value]
+        return self.get_parameter(107, value_type=int)
 
     @property
     def save_data_to_flash(self) -> int:
@@ -127,7 +127,7 @@ class TEC:
         0: Enabled
         1: Disabled (All Parameters can then be used as RAM Parameters)
         """
-        return self.get_parameter(108, value_type=int)  # type: ignore[return-value]
+        return self.get_parameter(108, value_type=int)
 
     @property
     def parameter_system_flash_status_ro(self) -> int:
@@ -139,7 +139,7 @@ class TEC:
            device now)
         2: Saving to Flash is disabled
         """
-        return self.get_parameter(109, value_type=int)  # type: ignore[return-value]
+        return self.get_parameter(109, value_type=int)
 
     # Tab: Monitor (Read only)
 
@@ -242,7 +242,7 @@ class TEC:
         4: Bootloader
         5: Device will Reset within the next 200ms
         """
-        return self.get_parameter(1080, value_type=int)  # type: ignore[return-value]
+        return self.get_parameter(1080, value_type=int)
 
     # Object Temperature Stability Detection
 
@@ -255,7 +255,7 @@ class TEC:
         1: Is not stable
         2: Is stable
         """
-        return self.get_parameter(1200, value_type=int)  # type: ignore[return-value]
+        return self.get_parameter(1200, value_type=int)
 
     # Tab: Operation
 
@@ -271,18 +271,18 @@ class TEC:
         2: Live OFF/ON (See ID 50000)
         3: HW Enable (Check GPIO Config)
         """
-        return self.get_parameter(2010, value_type=int)  # type: ignore[return-value]
+        return self.get_parameter(2010, value_type=int)
 
     @status.setter
-    def status(self, value) -> None:
-        self.set_parameter(2010, value, value_type=int)  # type: ignore[return-value]
+    def status(self, value: int) -> None:
+        self.set_parameter(2010, value, value_type=int)
 
     # Tab: Temperature Control
 
     # CHx Nominal temperature
 
     @property
-    def status_ch1(self):
+    def status_ch1(self) -> int:
         """
         Status CH1.
 
@@ -294,7 +294,7 @@ class TEC:
         return self.get_parameter(2010, value_type=int, instance=1)
 
     @status_ch1.setter
-    def status_ch1(self, value) -> None:
+    def status_ch1(self, value: int) -> None:
         self.set_parameter(2010, value, value_type=int, instance=1)
 
     @property
@@ -310,7 +310,7 @@ class TEC:
         return self.get_parameter(2010, value_type=int, instance=2)
 
     @status_ch2.setter
-    def status_ch2(self, value) -> None:
+    def status_ch2(self, value: int) -> None:
         self.set_parameter(2010, value, value_type=int, instance=2)
 
     @property
@@ -319,7 +319,7 @@ class TEC:
         return self.get_parameter(3000, value_type=float)
 
     @target_object_temperature.setter
-    def target_object_temperature(self, value) -> None:
+    def target_object_temperature(self, value: float) -> None:
         self.set_parameter(3000, value, value_type=float)
 
     @property
@@ -328,7 +328,7 @@ class TEC:
         return self.get_parameter(3003, value_type=float)
 
     @coarse_temp_ramp.setter
-    def coarse_temp_ramp(self, value) -> None:
+    def coarse_temp_ramp(self, value: float) -> None:
         self.set_parameter(3003, value, value_type=float)
 
     @property
@@ -337,7 +337,7 @@ class TEC:
         return self.get_parameter(3003, value_type=float, instance=1)
 
     @coarse_temp_ramp_ch1.setter
-    def coarse_temp_ramp_ch1(self, value) -> None:
+    def coarse_temp_ramp_ch1(self, value: float) -> None:
         self.set_parameter(3003, value, value_type=float, instance=1)
 
     @property
@@ -346,7 +346,7 @@ class TEC:
         return self.get_parameter(3003, value_type=float, instance=2)
 
     @coarse_temp_ramp_ch2.setter
-    def coarse_temp_ramp_ch2(self, value) -> None:
+    def coarse_temp_ramp_ch2(self, value: float) -> None:
         self.set_parameter(3003, value, value_type=float, instance=2)
 
     @property
@@ -355,7 +355,7 @@ class TEC:
         return self.get_parameter(3002, value_type=float)
 
     @proximity_width.setter
-    def proximity_width(self, value) -> None:
+    def proximity_width(self, value: float) -> None:
         self.set_parameter(3002, value, value_type=float)
 
     @property
@@ -364,7 +364,7 @@ class TEC:
         return self.get_parameter(3002, value_type=float, instance=1)
 
     @proximity_width_ch1.setter
-    def proximity_width_ch1(self, value) -> None:
+    def proximity_width_ch1(self, value: float) -> None:
         self.set_parameter(3002, value, value_type=float, instance=1)
 
     @property
@@ -373,7 +373,7 @@ class TEC:
         return self.get_parameter(3002, value_type=float, instance=2)
 
     @proximity_width_ch2.setter
-    def proximity_width_ch2(self, value) -> None:
+    def proximity_width_ch2(self, value: float) -> None:
         self.set_parameter(3002, value, value_type=float, instance=2)
 
     # CHx Temperature Controller PID Values
@@ -384,7 +384,7 @@ class TEC:
         return self.get_parameter(3010, value_type=float)
 
     @kp.setter
-    def kp(self, value) -> None:
+    def kp(self, value: float) -> None:
         self.set_parameter(3010, value, value_type=float)
 
     @property
@@ -393,7 +393,7 @@ class TEC:
         return self.get_parameter(3010, value_type=float, instance=1)
 
     @kp_ch1.setter
-    def kp_ch1(self, value) -> None:
+    def kp_ch1(self, value: float) -> None:
         self.set_parameter(3010, value, value_type=float, instance=1)
 
     @property
@@ -402,7 +402,7 @@ class TEC:
         return self.get_parameter(3010, value_type=float, instance=2)
 
     @kp_ch2.setter
-    def kp_ch2(self, value) -> None:
+    def kp_ch2(self, value: float) -> None:
         self.set_parameter(3010, value, value_type=float, instance=2)
 
     @property
@@ -411,7 +411,7 @@ class TEC:
         return self.get_parameter(3011, value_type=float)
 
     @ti.setter
-    def ti(self, value) -> None:
+    def ti(self, value: float) -> None:
         self.set_parameter(3011, value, value_type=float)
 
     @property
@@ -420,7 +420,7 @@ class TEC:
         return self.get_parameter(3011, value_type=float, instance=1)
 
     @ti_ch1.setter
-    def ti_ch1(self, value) -> None:
+    def ti_ch1(self, value: float) -> None:
         self.set_parameter(3011, value, value_type=float, instance=1)
 
     @property
@@ -429,7 +429,7 @@ class TEC:
         return self.get_parameter(3012, value_type=float)
 
     @td.setter
-    def td(self, value) -> None:
+    def td(self, value: float) -> None:
         self.set_parameter(3012, value, value_type=float)
 
     @property
@@ -438,7 +438,7 @@ class TEC:
         return self.get_parameter(3012, value_type=float, instance=1)
 
     @td_ch1.setter
-    def td_ch1(self, value) -> None:
+    def td_ch1(self, value: float) -> None:
         self.set_parameter(3012, value, value_type=float, instance=1)
 
     @property
@@ -447,7 +447,7 @@ class TEC:
         return self.get_parameter(3013, value_type=float)
 
     @d_part_damping_pt1.setter
-    def d_part_damping_pt1(self, value) -> None:
+    def d_part_damping_pt1(self, value: float) -> None:
         self.set_parameter(3013, value, value_type=float)
 
     @property
@@ -456,7 +456,7 @@ class TEC:
         return self.get_parameter(3013, value_type=float, instance=1)
 
     @d_part_damping_pt1_ch1.setter
-    def d_part_damping_pt1_ch1(self, value) -> None:
+    def d_part_damping_pt1_ch1(self, value: float) -> None:
         self.set_parameter(3013, value, value_type=float, instance=1)
 
     @property
@@ -465,7 +465,7 @@ class TEC:
         return self.get_parameter(3013, value_type=float, instance=2)
 
     @d_part_damping_pt1_ch2.setter
-    def d_part_damping_pt1_ch2(self, value) -> None:
+    def d_part_damping_pt1_ch2(self, value: float) -> None:
         self.set_parameter(3013, value, value_type=float, instance=2)
 
     # CHx Modelization for Thermal Power Regulation
@@ -479,11 +479,11 @@ class TEC:
         1: Peltier, Heat Only - Cool Only
         2: Resistor, Heat Only
         """
-        return self.get_parameter(3020, value_type=int)  # type: ignore[return-value]
+        return self.get_parameter(3020, value_type=int)
 
     @mode.setter
-    def mode(self, value) -> None:
-        self.set_parameter(3020, value, value_type=int)  # type: ignore[return-value]
+    def mode(self, value: int) -> None:
+        self.set_parameter(3020, value, value_type=int)
 
     @property
     def mode_ch1(self) -> int:
@@ -497,7 +497,7 @@ class TEC:
         return self.get_parameter(3020, value_type=int, instance=1)
 
     @mode_ch1.setter
-    def mode_ch1(self, value) -> None:
+    def mode_ch1(self, value: int) -> None:
         self.set_parameter(3020, value, value_type=int, instance=1)
 
     @property
@@ -512,7 +512,7 @@ class TEC:
         return self.get_parameter(3020, value_type=int, instance=2)
 
     @mode_ch2.setter
-    def mode_ch2(self, value) -> None:
+    def mode_ch2(self, value: int) -> None:
         self.set_parameter(3020, value, value_type=int, instance=2)
 
     # CHx Peltier Characteristics
@@ -523,7 +523,7 @@ class TEC:
         return self.get_parameter(3030, value_type=float)
 
     @maximal_current_imax.setter
-    def maximal_current_imax(self, value) -> None:
+    def maximal_current_imax(self, value: float) -> None:
         self.set_parameter(3030, value, value_type=float)
 
     @property
@@ -532,7 +532,7 @@ class TEC:
         return self.get_parameter(3030, value_type=float, instance=1)
 
     @maximal_current_imax_ch1.setter
-    def maximal_current_imax_ch1(self, value) -> None:
+    def maximal_current_imax_ch1(self, value: float) -> None:
         self.set_parameter(3030, value, value_type=float, instance=1)
 
     @property
@@ -541,7 +541,7 @@ class TEC:
         return self.get_parameter(3030, value_type=float, instance=2)
 
     @maximal_current_imax_ch2.setter
-    def maximal_current_imax_ch2(self, value) -> None:
+    def maximal_current_imax_ch2(self, value: float) -> None:
         self.set_parameter(3030, value, value_type=float, instance=2)
 
     @property
@@ -550,7 +550,7 @@ class TEC:
         return self.get_parameter(3033, value_type=float)
 
     @delta_temperature_dtmax.setter
-    def delta_temperature_dtmax(self, value) -> None:
+    def delta_temperature_dtmax(self, value: float) -> None:
         self.set_parameter(3033, value, value_type=float)
 
     @property
@@ -559,7 +559,7 @@ class TEC:
         return self.get_parameter(3033, value_type=float, instance=1)
 
     @delta_temperature_dtmax_ch1.setter
-    def delta_temperature_dtmax_ch1(self, value) -> None:
+    def delta_temperature_dtmax_ch1(self, value: float) -> None:
         self.set_parameter(3033, value, value_type=float, instance=1)
 
     @property
@@ -568,7 +568,7 @@ class TEC:
         return self.get_parameter(3033, value_type=float, instance=2)
 
     @delta_temperature_dtmax_ch2.setter
-    def delta_temperature_dtmax_ch2(self, value) -> None:
+    def delta_temperature_dtmax_ch2(self, value: float) -> None:
         self.set_parameter(3033, value, value_type=float, instance=2)
 
     @property
@@ -579,10 +579,10 @@ class TEC:
         0: Cooling
         1: Heating
         """
-        return self.get_parameter(3034, value_type=int)  # type: ignore[return-value]
+        return self.get_parameter(3034, value_type=int)
 
     @positive_current_is.setter
-    def positive_current_is(self, value) -> None:
+    def positive_current_is(self, value: int) -> None:
         self.set_parameter(3034, value, value_type=int)
 
     @property
@@ -596,7 +596,7 @@ class TEC:
         return self.get_parameter(3034, value_type=int, instance=1)
 
     @positive_current_is_ch1.setter
-    def positive_current_is_ch1(self, value) -> None:
+    def positive_current_is_ch1(self, value: int) -> None:
         self.set_parameter(3034, value, value_type=int, instance=1)
 
     @property
@@ -610,5 +610,5 @@ class TEC:
         return self.get_parameter(3034, value_type=int, instance=2)
 
     @positive_current_is_ch2.setter
-    def positive_current_is_ch2(self, value) -> None:
+    def positive_current_is_ch2(self, value: int) -> None:
         self.set_parameter(3034, value, value_type=int, instance=2)
