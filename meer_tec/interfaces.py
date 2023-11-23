@@ -27,7 +27,7 @@ class XPort(socket.socket):
         self.send(request.encode("ascii"))
         time.sleep(0.01)
         response = self.recv(128).decode("ascii")
-        return Message(response, request, value_type=request.value_type)
+        return Message(response, value_type=request.value_type)
 
     def clear(self) -> None:
         _ = self.recv(128)
@@ -43,4 +43,4 @@ class USB(serial.Serial):
         self.write(request.encode("ascii"))
         time.sleep(0.01)
         response = self.read(128).decode("ascii")
-        return Message(response, request, value_type=request.value_type)
+        return Message(response, value_type=request.value_type)
