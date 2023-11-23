@@ -30,9 +30,8 @@ def _calc_checksum(string: str) -> str:
 
 
 def _generate_request_number():
-    # generate a random request number
-    num = random.randint(0, 65535)
-    return f"{num:04X}"
+    """generate a random request number"""
+    return random.randint(0, 65535)
 
 
 class Interface(Protocol):
@@ -75,7 +74,7 @@ class USB(serial.Serial):
 class TEC:
     def __init__(self, interface: Interface, addr: int) -> None:
         self.interface = interface
-        self.addr = str(addr)
+        self.addr = addr
 
     def clear(self) -> None:
         self.interface.clear()
@@ -668,17 +667,17 @@ class TEC:
 
 
 class Request(str):
-    def __new__(cls, cmd: str, addr: str, request_number: Optional[str] = None):
+    def __new__(cls, cmd: str, addr: int, request_number: Optional[int] = None):
         if request_number is None:
             request_number = _generate_request_number()
         # stitch everything together and add checksum
-        string = f"#{int(addr):02d}{request_number}{cmd}"  # type: ignore[operator]
+        string = f"#{addr:02d}{request_number:04X}{cmd}"  # type: ignore[operator]
         string = f"{string}{_calc_checksum(string)}\r"
         return super().__new__(cls, string)
 
-    def __init__(self, cmd, addr, request_number=None):
-        self.addr = self[1:3]
-        self.request_number = self[3:7]
+    def __init__(self, cmd: str, addr: int, request_number: Optional[int] = None):
+        self.addr = int(self[1:3])
+        self.request_number = int(self[3:7])
         self.payload = self[7:-5]
         self.checksum = self[-5:-1]
 
@@ -690,8 +689,8 @@ class Response(str):
     def __init__(self, response, request, value_type) -> None:
         self.request = request
         self.value_type = value_type
-        self.addr = self[1:3]
-        self.request_number = self[3:7]
+        self.addr = int(self[1:3])
+        self.request_number = int(self[3:7])
         self.payload = self[7:-5]
         self.checksum = self[-5:-1]
 
