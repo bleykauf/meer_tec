@@ -35,7 +35,7 @@ def construct_mecom_cmd(
         cmd_type = "?VR"
         value = ""
 
-    cmd = f"#{addr:02d}{request_number:04X}{cmd_type}{cmd_id:04X}{instance:02X}{value}"
+    cmd = f"#{addr:02X}{request_number:04X}{cmd_type}{cmd_id:04X}{instance:02X}{value}"
     return f"{cmd}{calc_checksum(cmd)}\r"
 
 
