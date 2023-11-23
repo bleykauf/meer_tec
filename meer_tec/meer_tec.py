@@ -29,7 +29,7 @@ def _calc_checksum(string: str) -> str:
     return f"{CRC().calculate(string):04X}"
 
 
-def _generate_request_number():
+def _generate_request_number() -> int:
     """generate a random request number"""
     return random.randint(0, 65535)
 
@@ -80,7 +80,11 @@ class TEC:
         self.interface.clear()
 
     def get_parameter(
-        self, cmd_id: int, value_type, request_number=None, instance: int = 1
+        self,
+        cmd_id: int,
+        value_type,
+        request_number: Optional[int] = None,
+        instance: int = 1,
     ) -> Union[float, int]:
         cmd = f"?VR{_id_to_hex(cmd_id)}{instance:02X}"
         request = Request(cmd, self.addr, request_number=request_number)
@@ -90,7 +94,12 @@ class TEC:
         return reponse.value
 
     def set_parameter(
-        self, cmd_id: int, value, value_type, request_number=None, instance: int = 1
+        self,
+        cmd_id: int,
+        value: Union[float, int],
+        value_type,
+        request_number: Optional[int] = None,
+        instance: int = 1,
     ) -> None:
         cmd = f"VS{_id_to_hex(cmd_id)}{instance:02X}"
         if value_type is float:
@@ -683,10 +692,10 @@ class Request(str):
 
 
 class Response(str):
-    def __new__(cls, response, request, value_type):
+    def __new__(cls, response: str, request: Request, value_type):
         return super().__new__(cls, response)
 
-    def __init__(self, response, request, value_type) -> None:
+    def __init__(self, response: str, request: Request, value_type) -> None:
         self.request = request
         self.value_type = value_type
         self.addr = int(self[1:3])
