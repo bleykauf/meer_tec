@@ -19,11 +19,6 @@ def _int_to_hex(i: int) -> str:
     return f"{i:08X}"
 
 
-def _id_to_hex(cmd_id: int) -> str:
-    """Convert a command ID to a hex of length 4."""
-    return f"{cmd_id:04X}"
-
-
 def _calc_checksum(string: str) -> str:
     """Calculate CRC checksum."""
     return f"{CRC().calculate(string):04X}"
@@ -86,7 +81,7 @@ class TEC:
         request_number: Optional[int] = None,
         instance: int = 1,
     ) -> Union[float, int]:
-        cmd = f"?VR{_id_to_hex(cmd_id)}{instance:02X}"
+        cmd = f"?VR{cmd_id:04X}{instance:02X}"
         request = Request(cmd, self.addr, request_number=request_number)
         reponse = Response(
             self.interface.query(request), request, value_type=value_type
@@ -101,7 +96,7 @@ class TEC:
         request_number: Optional[int] = None,
         instance: int = 1,
     ) -> None:
-        cmd = f"VS{_id_to_hex(cmd_id)}{instance:02X}"
+        cmd = f"VS{cmd_id:04X}{instance:02X}"
         if value_type is float:
             cmd += _float_to_hex(value)
         elif value_type is int:
