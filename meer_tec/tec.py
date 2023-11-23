@@ -282,7 +282,7 @@ class TEC:
     # CHx Nominal temperature
 
     @property
-    def status_ch1(self) -> int:
+    def status_ch1(self):
         """
         Status CH1.
 

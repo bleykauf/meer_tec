@@ -27,15 +27,15 @@ def construct_mecom_cmd(
         cmd_type = "VS"
         if value_type is float:
             # convert float to hex of length 8, remove the leading '0X' and capitalize
-            value = hex(struct.unpack("<I", struct.pack("<f", value))[0])[2:].upper()
+            val = hex(struct.unpack("<I", struct.pack("<f", value))[0])[2:].upper()
         elif value_type is int:
             # convert int to hex of length 8
-            value = f"{value:08X}"
+            val = f"{value:08X}"
     else:
         cmd_type = "?VR"
-        value = ""
+        val = ""
 
-    cmd = f"#{addr:02X}{request_number:04X}{cmd_type}{cmd_id:04X}{instance:02X}{value}"
+    cmd = f"#{addr:02X}{request_number:04X}{cmd_type}{cmd_id:04X}{instance:02X}{val}"
     return f"{cmd}{calc_checksum(cmd)}\r"
 
 
@@ -62,3 +62,5 @@ class Message(str):
             return int(self.payload, 16)
         if self.value_type is float:
             return struct.unpack("!f", bytes.fromhex(self.payload))[0]
+        else:
+            return float("nan")
