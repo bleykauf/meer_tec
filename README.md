@@ -1,13 +1,12 @@
 # MeerTEC -- Python implemenation of the MeCom interface for Meerstetter TECs.
-
-<!---
-[![Conda](https://img.shields.io/conda/v/conda-forge/meer_tec?color=blue&label=conda-forge)](https://anaconda.org/conda-forge/meer_tec)
-[![Build Status](https://travis-ci.com/bleykauf/meer_tec.svg?branch=main)](https://travis-ci.com/bleykauf/meer_tec)
-[![Documentation Status](https://readthedocs.org/projects/meer_tec/badge/?version=latest)](https://meer_tec.readthedocs.io/en/latest/?badge=latest)
-[![Coverage Status](https://coveralls.io/repos/github/bleykauf/meer_tec/badge.svg?branch=main)](https://coveralls.io/github/bleykauf/meer_tec?branch=main)
+<!--
+![Test Coverage](https://raw.githubusercontent.com/bleykauf/meer_tec/master/docs/coverage.svg)
 -->
 [![PyPI](https://img.shields.io/pypi/v/meer_tec?color=blue)](https://pypi.org/project/meer_tec/)
+![Test Status](https://github.com/bleykauf/aisim/actions/workflows/pytest.yml/badge.svg)
+![Test Coverage](./docs/coverage.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 
 Both communication via USB and [Lantronix XPort](https://www.lantronix.com/products/xport/) are supported.
 
