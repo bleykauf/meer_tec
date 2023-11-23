@@ -3,7 +3,7 @@
 ![Test Coverage](https://raw.githubusercontent.com/bleykauf/meer_tec/master/docs/coverage.svg)
 -->
 [![PyPI](https://img.shields.io/pypi/v/meer_tec?color=blue)](https://pypi.org/project/meer_tec/)
-![Test Status](https://github.com/bleykauf/aisim/actions/workflows/pytest.yml/badge.svg)
+![Test Status](https://github.com/bleykauf/meer_tec/actions/workflows/test.yml/badge.svg)
 ![Test Coverage](./docs/coverage.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
