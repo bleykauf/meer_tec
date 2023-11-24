@@ -6,6 +6,7 @@ def test_vs_float() -> None:
     CMD = "#7BEF32VS03E8E641C8CCCDE2C1\r"
     cmd = construct_mecom_cmd(
         device_addr=123,
+        cmd="VS",
         param_id=1000,
         value_type=float,
         value=25.1,
@@ -15,11 +16,12 @@ def test_vs_float() -> None:
     assert cmd == CMD
 
 
-def test_vd_float() -> None:
+def test_vr_float() -> None:
     # created with https://www.meerstetter.ch/MeCom/
     CMD = "#7BEF32?VR03E8E69AAD\r"
     cmd = construct_mecom_cmd(
         device_addr=123,
+        cmd="?VR",
         param_id=1000,
         value_type=float,
         param_inst=230,
@@ -32,6 +34,7 @@ def test_vs_int() -> None:
     CMD = "#E6EA5FVS07E57B0000001958B0\r"
     cmd = construct_mecom_cmd(
         device_addr=230,
+        cmd="VS",
         param_id=2021,
         value_type=int,
         value=25,
@@ -41,10 +44,11 @@ def test_vs_int() -> None:
     assert cmd == CMD
 
 
-def test_vd_int() -> None:
+def test_vr_int() -> None:
     CMD = "#E6EA5F?VR07E57BB3B5\r"
     cmd = construct_mecom_cmd(
         device_addr=230,
+        cmd="?VR",
         param_id=2021,
         value_type=int,
         param_inst=123,
