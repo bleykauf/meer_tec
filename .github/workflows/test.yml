@@ -21,11 +21,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install .[tests]
-          pip uninstall -y meer_tec  # only keep dependencies
+          # pip uninstall -y meer_tec  # only keep dependencies
       - name: Run pytest
         run: pytest .
       - name: Run mypy
-        run: mypy .
+        run: mypy --explicit-package-base .
 
   coverage:
     needs:
