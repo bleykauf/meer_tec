@@ -1,7 +1,7 @@
 from typing import Optional, Type
 
 from .interfaces import Interface, Message
-from .mecom import FloatOrInt, construct_mecom_cmd
+from .mecom import FloatOrInt, construct_param_cmd, construct_reset_cmd, verify_response
 
 
 class TEC:
@@ -19,7 +19,7 @@ class TEC:
         seq_num: Optional[int] = None,
         param_inst: int = 1,
     ) -> FloatOrInt:
-        cmd = construct_mecom_cmd(
+        cmd = construct_param_cmd(
             device_addr=self.device_addr,
             cmd="?VR",
             param_id=param_id,
@@ -41,7 +41,7 @@ class TEC:
         seq_num: Optional[int] = None,
         param_inst: int = 1,
     ) -> None:
-        cmd = construct_mecom_cmd(
+        cmd = construct_param_cmd(
             device_addr=self.device_addr,
             cmd="VS",
             param_id=param_id,
@@ -52,12 +52,16 @@ class TEC:
         )
         request = Message(cmd, value_type)
         reponse = Message(self.interface.query(request), value_type=value_type)
+        if not verify_response(reponse, request):
+            raise ValueError("Response does not match request")
         print(reponse)
 
     def reset(self) -> None:
-        # FIXME: Could not find this in the documentation
-        # self.set_parameter("?RS", value_type=int)
-        raise NotImplementedError
+        cmd = construct_reset_cmd(device_addr=self.device_addr)
+        request = Message(cmd, value_type=int)
+        reponse = Message(self.interface.query(request), value_type=int)
+        if not verify_response(reponse, request):
+            raise ValueError("Response does not match request")
 
     # Common product parameters
 
