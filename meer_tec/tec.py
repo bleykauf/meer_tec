@@ -1,4 +1,4 @@
-from typing import Optional, Type, Union
+from typing import Optional, Type
 
 from .interfaces import Interface, Message
 from .mecom import FloatOrInt, construct_mecom_cmd
@@ -21,6 +21,7 @@ class TEC:
     ) -> FloatOrInt:
         cmd = construct_mecom_cmd(
             device_addr=self.device_addr,
+            cmd="?VR",
             param_id=param_id,
             value_type=value_type,
             param_inst=param_inst,
@@ -28,19 +29,21 @@ class TEC:
             seq_num=seq_num,
         )
         request = Message(cmd, value_type)
+
         reponse = Message(self.interface.query(request), value_type=value_type)
         return reponse.value
 
     def set_parameter(
         self,
         param_id: int,
-        value: Union[float, int],
+        value: FloatOrInt,
         value_type: Type[FloatOrInt],
         seq_num: Optional[int] = None,
         param_inst: int = 1,
     ) -> None:
         cmd = construct_mecom_cmd(
             device_addr=self.device_addr,
+            cmd="VS",
             param_id=param_id,
             value_type=value_type,
             param_inst=param_inst,

@@ -1,6 +1,6 @@
 import random
 import struct
-from typing import Generic, Optional, Type, TypeVar, Union
+from typing import Generic, Optional, Type, TypeVar
 
 from PyCRC.CRCCCITT import CRCCCITT as CRC
 
@@ -14,32 +14,42 @@ def calc_checksum(string: str) -> str:
 
 def construct_mecom_cmd(
     device_addr: int,
+    cmd: str,
     param_id: int,
     value_type: Type[FloatOrInt],
-    param_inst: int = 1,  # for example to distinguish between CH1 and CH2
-    value: Optional[Union[float, int]] = None,
+    param_inst: int = 1,
+    value: Optional[FloatOrInt] = None,
     seq_num: Optional[int] = None,
 ) -> str:
-    """Construct a VS or ?VR command."""
+    """
+    Construct a MeCom command.
+
+    :param device_addr: Device address (0 .. 255). Broadcast Device Address (0) will
+        send the command to all connected Meerstetter devices
+    :param param_id: Parameter ID (0 .. 65535)
+    :param value_type: Value type (int or float)
+    :param param_inst: Parameter instance (0 .. 255). For most parameters the instance
+        is used to address the channel on the device
+    :param value: Value to set
+    :param seq_num: Sequence number (0 .. 65535). If not given, a random number will be
+        generated
+    :return: MeCom command
+    """
     if seq_num is None:
         # generate a random request number if none is given
         seq_num = random.randint(0, 65535)
 
-    if value is not None:
-        cmd_type = "VS"
+    if cmd == "VS":
         if value_type is float:
             # convert float to hex of length 8, remove the leading '0X' and capitalize
             val = hex(struct.unpack("<I", struct.pack("<f", value))[0])[2:].upper()
         elif value_type is int:
             # convert int to hex of length 8
             val = f"{value:08X}"
-    else:
-        cmd_type = "?VR"
+    elif cmd == "?VR":
         val = ""
 
-    cmd = (
-        f"#{device_addr:02X}{seq_num:04X}{cmd_type}{param_id:04X}{param_inst:02X}{val}"
-    )
+    cmd = f"#{device_addr:02X}{seq_num:04X}{cmd}{param_id:04X}{param_inst:02X}{val}"
     return f"{cmd}{calc_checksum(cmd)}\r"
 
 
