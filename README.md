@@ -18,6 +18,8 @@ Note that not all commands of [MeCom](https://www.meerstetter.ch/customer-center
 #### USB
 
 ```python
+from meer_tec.interfaces import USB
+from meer_tec.tec import TEC
 usb = USB("COM3")
 tec = TEC(usb, 0)
 ```
@@ -26,6 +28,8 @@ tec = TEC(usb, 0)
 Create a connection to the XPort and pass it as an argument to one of the TECs
 
 ```python
+from meer_tec.interfaces import USB
+from meer_tec.tec import TEC
 xp = XPort('192.168.1.123')
 tec3 = TEC(xp, 3)
 ```
