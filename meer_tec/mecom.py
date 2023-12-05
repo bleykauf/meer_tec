@@ -109,8 +109,8 @@ class Message(str, Generic[FloatOrInt]):
 
     def __init__(self, response: str, value_type: Type[FloatOrInt]) -> None:
         self.value_type = value_type
-        self.device_addr = int(self[1:3])
-        self.seq_num = int(self[3:7])
+        self.device_addr = int(self[1:3], 8)
+        self.seq_num = int(self[3:7], 16)
         self.payload = self[7:-5]
         self.checksum = self[-5:-1]
 
